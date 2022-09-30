@@ -41,6 +41,7 @@ function Login() {
               return;
             }
             try {
+              values.username = values.username.trim();
               const { data } = await axios.post("/login", values);
               dispatch(
                 setUser({
