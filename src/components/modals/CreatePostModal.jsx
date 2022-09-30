@@ -5,6 +5,7 @@ import {
   Modal,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import React from "react";
@@ -42,6 +43,9 @@ function ModalComponent({ isOpen, setIsOpen }) {
             }}
           >
             <Stack display={"flex"} flexDirection="column" gap={4}>
+              <Typography variant="h4" fontSize={25} align={"center"}>
+                Create post
+              </Typography>
               <TextField
                 variant="outlined"
                 name="question"

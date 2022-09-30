@@ -24,6 +24,7 @@ import {
   addComment,
   deletePost,
   editPost,
+  likePost,
   setPinned,
 } from "../redux/slices/postsSlice";
 
@@ -128,6 +129,18 @@ function Post({ post, date }) {
     }
   };
 
+  const handleLike = async () => {
+    try {
+      dispatch(
+        likePost({ postId: post._id, userId: currentUser.payload.user._id })
+      );
+      await mutationInstance.patch(`/like_post/${post._id}`);
+      return;
+    } catch (error) {
+      Promise.reject(error);
+    }
+  };
+
   return (
     <Card
       sx={{
@@ -167,6 +180,18 @@ function Post({ post, date }) {
         </Typography>
       </CardContent>
       <CardActions sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          variant={
+            post.likes.includes(currentUser.payload.user._id)
+              ? "contained"
+              : "outlined"
+          }
+          color={"success"}
+          sx={{ justifySelf: "flex-start", mr: "auto" }}
+          onClick={handleLike}
+        >
+          Like {post.likes.length}
+        </Button>
         {post.comments.length > 0 && (
           <ExpandMore onClick={() => setExpanded(!expanded)} expand={expanded}>
             <ExpandMoreIcon />
@@ -191,7 +216,7 @@ function Post({ post, date }) {
                     color: "white",
                   },
                 }}
-                key={comment?._id}
+                key={comment._id ? comment._id : crypto.randomUUID()}
               >
                 <Typography fontWeight={600} sx={{ float: "left" }}>
                   {comment.userId?.username} &nbsp;

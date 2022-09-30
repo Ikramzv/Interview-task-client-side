@@ -45,6 +45,20 @@ const postSlice = createSlice({
         return post;
       });
     },
+    likePost(state, action) {
+      state = state.map((post) => {
+        if (post._id === action.payload.postId) {
+          if (post.likes.includes(action.payload.userId)) {
+            const index = post.likes.indexOf(action.payload.userId);
+            post.likes.splice(index, 1);
+          } else {
+            post.likes.push(action.payload.userId);
+          }
+          return post;
+        }
+        return post;
+      });
+    },
   },
 });
 
@@ -55,5 +69,6 @@ export const {
   editPost,
   addComment,
   setPinned,
+  likePost,
 } = postSlice.actions;
 export default postSlice.reducer;
