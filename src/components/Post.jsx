@@ -85,9 +85,9 @@ function Post({ post, date }) {
   const handleDelete = async (id) => {
     const req = prompt("Are you sure to delete post ? If sure write 'yes' ");
     try {
-      if (req === "yes") {
-        dispatch(deletePost({ id }));
-      }
+      if (req !== "yes") return;
+      dispatch(deletePost({ id }));
+      await mutationInstance.delete(`/post/${post._id}`);
     } catch (error) {
       Promise.reject(error);
     }
