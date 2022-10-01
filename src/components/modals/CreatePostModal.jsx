@@ -9,22 +9,24 @@ import {
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "../../axios/axios";
 import { createPost } from "../../redux/slices/postsSlice";
+import socket from "../../socket/socket";
 
 function ModalComponent({ isOpen, setIsOpen }) {
   const dispatch = useDispatch();
+  const currentUserId = useSelector((state) => state.user.payload.user._id);
   return (
     <Modal open={isOpen} sx={{ display: "grid", placeContent: "center" }}>
       <Formik
         initialValues={{ question: "" }}
         onSubmit={async (values, actions) => {
           const { setErrors } = actions;
-          console.log(values);
           if (values.question === "")
             return setErrors({ question: "Question field must be fullfilled" });
           try {
+            socket.emit("questionPoint", { userId: currentUserId, value: 5 });
             const { data } = await axios.post("/posts", values);
             dispatch(createPost(data));
             setIsOpen(false);

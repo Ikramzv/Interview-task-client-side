@@ -27,6 +27,7 @@ import {
   likePost,
   setPinned,
 } from "../redux/slices/postsSlice";
+import socket from "../socket/socket";
 
 const cardContentStyle = {
   mx: "10px",
@@ -110,6 +111,10 @@ function Post({ post, date }) {
           },
         })
       );
+      socket.emit("commentPoint", {
+        userId: currentUser.payload.user._id,
+        value: 10,
+      });
       await mutationInstance.patch(`/comment/${post._id}`, {
         text: commentText,
       });

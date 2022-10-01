@@ -16,6 +16,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { queryInstance } from "../axios/axios";
 import { setPosts } from "../redux/slices/postsSlice";
+import socket from "../socket/socket";
 import Post from "./Post";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -33,6 +34,7 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 function Feed() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
+  const currentUser = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
   const variantsLeft = useRef({
     hidden: {
@@ -69,7 +71,23 @@ function Feed() {
     }
     getUsers();
     getPosts();
+
+    // socket io
+
+    socket.on("sendQuestionPoint", (data) => {
+      console.log(data);
+    });
+    socket.on("sendCommentPoint", (data) => {
+      console.log(data);
+    });
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      socket.emit("user", currentUser.payload.user);
+    }
+  }, [currentUser.payload.user._id]);
+
   // If any post is pinned then it will be sort the posts again
   useEffect(() => {
     function sortByPinned() {
@@ -138,7 +156,7 @@ function Feed() {
                     sx={{ backgroundColor: `${index < 3 && "#E1FFB1"}` }}
                   >
                     <TableCell>{user.username}</TableCell>
-                    <TableCell>0</TableCell>
+                    <TableCell>{user.points}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
